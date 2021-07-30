@@ -69,7 +69,7 @@ static uint64_t get_dock_spaces_addr(NSOperatingSystemVersion ver) {
       return 0x100426500ULL;
     }
   } else if (ver.majorVersion == 12) {
-    return 0x10042FDD0ULL;
+    return 0x100433CB0ULL;
   }
 
   return 0;
@@ -111,7 +111,7 @@ static uint64_t get_dppm_addr(NSOperatingSystemVersion ver) {
       return 0x100426580ULL;
     }
   } else if (ver.majorVersion == 12) {
-    return 0x10042FE50ULL;
+    return 0x100433D30ULL;
   }
 
   return 0;
@@ -127,7 +127,7 @@ static uint64_t get_add_space_addr(NSOperatingSystemVersion ver) {
       return 0x1002259D0ULL;
     }
   } else if (ver.majorVersion == 12) {
-    return 0x10022B93CULL;
+    return 0x10022F1F8ULL;
   }
 
   return 0;
@@ -143,7 +143,7 @@ static uint64_t get_remove_space_addr(NSOperatingSystemVersion ver) {
       return 0x1002D668CULL;
     }
   } else if (ver.majorVersion == 12) {
-    return 0x1002DE224ULL;
+    return 0x1002E1B1CULL;
   }
 
   return 0;
@@ -159,7 +159,7 @@ static uint64_t get_move_space_addr(NSOperatingSystemVersion ver) {
       return 0x1002C8B04ULL;
     }
   } else if (ver.majorVersion == 12) {
-    return 0x1002CFA8CULL;
+    return 0x1002D32B0ULL;
   }
 
   return 0;
@@ -175,7 +175,7 @@ static uint64_t get_set_front_window_addr(NSOperatingSystemVersion ver) {
       return 0x10004F5FCULL;
     }
   } else if (ver.majorVersion == 12) {
-    return 0x10004E9D4ULL;
+    return 0x100051304ULL;
   }
 
   return 0;
