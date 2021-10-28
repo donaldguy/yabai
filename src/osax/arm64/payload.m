@@ -267,3 +267,4 @@ const char *get_set_front_window_pattern(NSOperatingSystemVersion os_version) {
     }
     return NULL;
 }
+*/
