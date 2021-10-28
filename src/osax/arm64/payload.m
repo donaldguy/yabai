@@ -69,7 +69,13 @@ static uint64_t get_dock_spaces_addr(NSOperatingSystemVersion ver) {
       return 0x100426500ULL;
     }
   } else if (ver.majorVersion == 12) {
-    return 0x100433CC0ULL;
+    if (ver.minorVersion == 0) {
+      return 0x100433CC0ULL;
+    }
+
+    if (ver.minorVersion == 1) {
+      return 0x100433EE0ULL;
+    }
   }
 
   return 0;
@@ -111,7 +117,13 @@ static uint64_t get_dppm_addr(NSOperatingSystemVersion ver) {
       return 0x100426580ULL;
     }
   } else if (ver.majorVersion == 12) {
-    return 0x100433D40ULL;
+    if (ver.minorVersion == 0) {
+      return 0x100433D40ULL;
+    }
+
+    if (ver.minorVersion == 1) {
+      return 0x100433F60ULL;
+    }
   }
 
   return 0;
@@ -127,7 +139,13 @@ static uint64_t get_add_space_addr(NSOperatingSystemVersion ver) {
       return 0x1002259D0ULL;
     }
   } else if (ver.majorVersion == 12) {
-    return 0x10022E460ULL;
+    if (ver.minorVersion == 0) {
+      return 0x10022E460ULL;
+    }
+
+    if (ver.minorVersion == 1) {
+      return 0x10022EAA4ULL;
+    }
   }
 
   return 0;
@@ -143,7 +161,13 @@ static uint64_t get_remove_space_addr(NSOperatingSystemVersion ver) {
       return 0x1002D668CULL;
     }
   } else if (ver.majorVersion == 12) {
-    return 0x1002E1908ULL;
+    if (ver.minorVersion == 0) {
+      return 0x1002E1908ULL;
+    }
+
+    if (ver.minorVersion == 1) {
+      return 0x1002E12E8ULL;
+    }
   }
 
   return 0;
@@ -159,7 +183,13 @@ static uint64_t get_move_space_addr(NSOperatingSystemVersion ver) {
       return 0x1002C8B04ULL;
     }
   } else if (ver.majorVersion == 12) {
-    return 0x1002D2A74ULL;
+    if (ver.minorVersion == 0) {
+      return 0x1002D2A74ULL;
+    }
+
+    if (ver.minorVersion == 1) {
+      return 0x1002D2454ULL;
+    }
   }
 
   return 0;
@@ -175,7 +205,13 @@ static uint64_t get_set_front_window_addr(NSOperatingSystemVersion ver) {
       return 0x10004F5FCULL;
     }
   } else if (ver.majorVersion == 12) {
-    return 0x10004F2C8ULL;
+    if (ver.minorVersion == 0) {
+      return 0x10004F2C8ULL;
+    }
+
+    if (ver.minorVersion == 1) {
+      return 0x10004DAE0ULL;
+    }
   }
 
   return 0;
