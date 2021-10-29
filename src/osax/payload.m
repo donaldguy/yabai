@@ -304,6 +304,7 @@ static void init_instances()
             set_front_window_fp = set_front_window_addr;
         }
     }
+#endif
 
     managed_space = objc_getClass("Dock.ManagedSpace");
     _connection = CGSMainConnectionID();
