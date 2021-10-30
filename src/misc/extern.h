@@ -56,6 +56,7 @@ extern CGError _SLPSSetFrontProcessWithOptions(ProcessSerialNumber *psn, uint32_
 extern CGError SLPSPostEventRecordTo(ProcessSerialNumber *psn, uint8_t *bytes);
 extern OSStatus SLSFindWindowByGeometry(int cid, int zero, int one, int zero_again, CGPoint *screen_point, CGPoint *window_point, uint32_t *wid, int *wcid);
 extern CGError SLSGetCurrentCursorLocation(int cid, CGPoint *point);
+extern CGError CGSWindowSetShadowProperties(int wid, CFDictionaryRef properties);
 
 #if 0
 extern CFArrayRef _LSCopyApplicationArrayInFrontToBackOrder(int negative_one, int one);

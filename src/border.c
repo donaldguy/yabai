@@ -91,6 +91,18 @@ void border_create(struct window *window)
                                g_window_manager.normal_border_color.a);
     scripting_addition_add_to_window_group(window->border.id, window->id);
 
+    // workaround: disable border shadow on macOS 12 because `kCGSDisableShadowTagBit` does not work anymore
+    if (__builtin_available(macOS 12.0, *)) {
+      CFIndex shadow_density = 0;
+      CFNumberRef shadow_density_cf = CFNumberCreate(kCFAllocatorDefault, kCFNumberCFIndexType, &shadow_density);
+      const void *keys[1] = { CFSTR("com.apple.WindowShadowDensity") };
+      const void *values[1] = {  shadow_density_cf };
+      CFDictionaryRef shadow_props_cf = CFDictionaryCreate(NULL, keys, values, 1, &kCFTypeDictionaryKeyCallBacks, &kCFTypeDictionaryValueCallBacks);
+      CGSWindowSetShadowProperties(window->border.id, shadow_props_cf);
+      CFRelease(shadow_density_cf);
+      CFRelease(shadow_props_cf);
+    }
+
     border_redraw(window);
 
     if ((!window->application->is_hidden) &&
