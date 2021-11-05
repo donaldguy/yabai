@@ -726,6 +726,7 @@ static void do_window_shadow(const char *message)
     } else {
         CGSSetWindowTags(_connection, wid, tags, 32);
     }
+    if (__builtin_available(macOS 12.0, *)) return;
     CGSInvalidateWindowShadow(_connection, wid);
 }
 
