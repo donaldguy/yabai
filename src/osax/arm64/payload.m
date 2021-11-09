@@ -210,7 +210,7 @@ static uint64_t get_set_front_window_addr(NSOperatingSystemVersion ver) {
     }
 
     if (ver.minorVersion == 1) {
-      return 0x10004DAE0ULL;
+      return 0x10004DAD0ULL;
     }
   }
 
