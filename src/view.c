@@ -812,6 +812,19 @@ struct window_node *view_add_window_node(struct view *view, struct window *windo
     return view_add_window_node_with_insertion_point(view, window, 0);
 }
 
+uint32_t view_window_count(struct view *view)
+{
+    uint32_t window_count = 0;
+
+    struct window_node *node = window_node_find_first_leaf(view->root);
+    while (node) {
+        window_count += node->window_count;
+        node = window_node_find_next_leaf(node);
+    }
+
+    return window_count;
+}
+
 uint32_t *view_find_window_list(struct view *view, int *window_count)
 {
     *window_count = 0;

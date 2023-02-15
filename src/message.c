@@ -50,6 +50,10 @@ extern bool g_verbose;
 #define COMMAND_CONFIG_SPLIT_RATIO           "split_ratio"
 #define COMMAND_CONFIG_SPLIT_TYPE            "split_type"
 #define COMMAND_CONFIG_AUTO_BALANCE          "auto_balance"
+#define COMMAND_CONFIG_AUTO_PAD              "auto_padding"
+#define COMMAND_CONFIG_AUTO_PAD_WIDTH        "auto_padding_width"
+#define COMMAND_CONFIG_AUTO_PAD_HEIGHT       "auto_padding_height"
+#define COMMAND_CONFIG_AUTO_PAD_ASPECT       "auto_padding_min_aspect"
 #define COMMAND_CONFIG_MOUSE_MOD             "mouse_modifier"
 #define COMMAND_CONFIG_MOUSE_ACTION1         "mouse_action1"
 #define COMMAND_CONFIG_MOUSE_ACTION2         "mouse_action2"
@@ -1460,6 +1464,32 @@ static void handle_domain_config(FILE *rsp, struct token domain, char *message)
                 g_space_manager.auto_balance = true;
             } else {
                 daemon_fail(rsp, "unknown value '%.*s' given to command '%.*s' for domain '%.*s'\n", value.length, value.text, command.length, command.text, domain.length, domain.text);
+            }
+        } else if (token_equals(command, COMMAND_CONFIG_AUTO_PAD)) {
+            struct token value = get_token(&message);
+            if (!token_is_valid(value)) {
+                fprintf(rsp, "%s\n", bool_str[g_space_manager.auto_pad]);
+            } else if (token_equals(value, ARGUMENT_COMMON_VAL_OFF)) {
+                g_space_manager.auto_pad = false;
+            } else if (token_equals(value, ARGUMENT_COMMON_VAL_ON)) {
+                g_space_manager.auto_pad = true;
+            } else {
+                daemon_fail(rsp, "unknown value '%.*s' given to command '%.*s' for domain '%.*s'\n", value.length, value.text, command.length, command.text, domain.length, domain.text);
+            }
+        } else if (token_equals(command, COMMAND_CONFIG_AUTO_PAD_WIDTH)) {
+            struct token_value value = token_to_value(get_token(&message));
+            if (value.type == TOKEN_TYPE_INT) {
+              g_space_manager.auto_pad_width = value.int_value;
+            }
+        } else if (token_equals(command, COMMAND_CONFIG_AUTO_PAD_HEIGHT)) {
+            struct token_value value = token_to_value(get_token(&message));
+            if (value.type == TOKEN_TYPE_INT) {
+              g_space_manager.auto_pad_height = value.int_value;
+            }
+        } else if (token_equals(command, COMMAND_CONFIG_AUTO_PAD_ASPECT)) {
+            struct token_value value = token_to_value(get_token(&message));
+            if (value.type == TOKEN_TYPE_FLOAT) {
+              g_space_manager.auto_pad_min_aspect = value.float_value;
             }
         } else if (token_equals(command, COMMAND_CONFIG_MOUSE_MOD)) {
             struct token value = get_token(&message);

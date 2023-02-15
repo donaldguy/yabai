@@ -24,6 +24,11 @@ struct space_manager
     enum window_node_child window_placement;
     bool window_zoom_persist;
     bool auto_balance;
+    bool auto_pad;
+    double auto_pad_min_aspect;
+    uint32_t auto_pad_width;
+    uint32_t auto_pad_height;
+
     struct space_label *labels;
 };
 
@@ -99,5 +104,8 @@ void space_manager_mark_spaces_invalid(struct space_manager *sm);
 bool space_manager_refresh_application_windows(struct space_manager *sm);
 void space_manager_handle_display_add(struct space_manager *sm, uint32_t did);
 void space_manager_begin(struct space_manager *sm);
+
+bool space_manager_reset_view_paddings(struct space_manager* sm, struct view* view);
+bool space_manager_autopad_view(struct space_manager* sm, struct view* view, uint32_t window_count, bool update);
 
 #endif

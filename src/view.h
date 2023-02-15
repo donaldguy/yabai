@@ -164,6 +164,7 @@ struct window_node *view_add_window_node_with_insertion_point(struct view *view,
 struct window_node *view_add_window_node(struct view *view, struct window *window);
 struct window_node *view_remove_window_node(struct view *view, struct window *window);
 uint32_t *view_find_window_list(struct view *view, int *window_count);
+uint32_t view_window_count(struct view *view);
 
 void view_serialize(FILE *rsp, struct view *view);
 bool view_is_invalid(struct view *view);
