@@ -113,7 +113,7 @@ void space_manager_refresh_view(struct space_manager *sm, uint64_t sid)
       view->left_padding = sm->left_padding;
       view->right_padding = sm->right_padding;
       view->top_padding = sm->top_padding;
-      view->bottom_padding = sm->bottom_padding; 
+      view->bottom_padding = sm->bottom_padding;
 
       sm->split_type = SPLIT_AUTO;
       sm->auto_balance = false;
@@ -132,7 +132,7 @@ void space_manager_mark_view_invalid(struct space_manager *sm,  uint64_t sid)
       view->left_padding = sm->left_padding;
       view->right_padding = sm->right_padding;
       view->top_padding = sm->top_padding;
-      view->bottom_padding = sm->bottom_padding; 
+      view->bottom_padding = sm->bottom_padding;
 
       sm->split_type = SPLIT_AUTO;
       sm->auto_balance = false;
@@ -461,6 +461,42 @@ struct view* space_manager_auto_pad_view_insertion(struct space_manager* sm, str
     sm->split_type = SPLIT_AUTO;
 
     return NULL;
+}
+
+void space_manager_set_autopad(struct space_manager* sm, bool enabled) {
+  if (sm->auto_pad == enabled) {
+    return;
+  }
+
+  sm->auto_pad = enabled;
+  space_manager_mark_spaces_invalid(sm);
+}
+
+void space_manager_set_autopad_width(struct space_manager* sm, int new_width) {
+  int old_width = sm->auto_pad_width;
+  sm->auto_pad_width = new_width;
+
+  if (sm->auto_pad && old_width != new_width) {
+    space_manager_mark_spaces_invalid(sm);
+  }
+}
+
+void space_manager_set_autopad_height(struct space_manager* sm, int new_height) {
+  int old_height = sm->auto_pad_height;
+  sm->auto_pad_height = new_height;
+
+  if (sm->auto_pad && old_height != new_height) {
+    space_manager_mark_spaces_invalid(sm);
+  }
+}
+
+void space_manager_set_autopad_min_aspect(struct space_manager* sm, float new_aspect) {
+  float old_aspect = sm->auto_pad_min_aspect;
+  sm->auto_pad_min_aspect = new_aspect;
+
+  if (sm->auto_pad && old_aspect != new_aspect) {
+    space_manager_mark_spaces_invalid(sm);
+  }
 }
 
 bool space_manager_autopad_view(struct space_manager* sm, struct view* view, uint32_t window_count, bool update) {
