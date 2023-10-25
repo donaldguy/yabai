@@ -1468,7 +1468,7 @@ static void handle_domain_config(FILE *rsp, struct token domain, char *message)
         } else if (token_equals(command, COMMAND_CONFIG_AUTO_PAD)) {
             struct token value = get_token(&message);
             if (!token_is_valid(value)) {
-                fprintf(rsp, "%s\n", bool_str[g_space_manager.auto_pad]);
+                fprintf(rsp, "%s\n", bool_str[g_space_manager.autopad->enabled]);
             } else if (token_equals(value, ARGUMENT_COMMON_VAL_OFF)) {
                 space_manager_set_autopad(&g_space_manager, false);
             } else if (token_equals(value, ARGUMENT_COMMON_VAL_ON)) {
@@ -1480,7 +1480,7 @@ static void handle_domain_config(FILE *rsp, struct token domain, char *message)
             struct token value = get_token(&message);
             int new_width;
             if (!token_is_valid(value)) {
-              fprintf(rsp, "%d\n", g_space_manager.auto_pad_width);
+              fprintf(rsp, "%d\n", g_space_manager.autopad->width);
             } else if (token_is_positive_integer(value, &new_width)) {
               space_manager_set_autopad_width(&g_space_manager, new_width);
             } else {
@@ -1490,7 +1490,7 @@ static void handle_domain_config(FILE *rsp, struct token domain, char *message)
             struct token value = get_token(&message);
             int new_height;
             if (!token_is_valid(value)) {
-              fprintf(rsp, "%d\n", g_space_manager.auto_pad_height);
+              fprintf(rsp, "%d\n", g_space_manager.autopad->height);
             } else if (token_is_positive_integer(value, &new_height)) {
               space_manager_set_autopad_height(&g_space_manager, new_height);
             } else {
@@ -1500,7 +1500,7 @@ static void handle_domain_config(FILE *rsp, struct token domain, char *message)
             struct token value = get_token(&message);
             float new_min_aspect;
             if (!token_is_valid(value)) {
-              fprintf(rsp, "%f\n", g_space_manager.auto_pad_min_aspect);
+              fprintf(rsp, "%f\n", g_space_manager.autopad->min_aspect);
             } else if (token_is_float(value, &new_min_aspect)) {
               space_manager_set_autopad_min_aspect(&g_space_manager, new_min_aspect);
             } else {

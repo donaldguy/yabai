@@ -7,6 +7,14 @@ struct space_label
     char *label;
 };
 
+struct space_autopad
+{
+    bool enabled;
+    float min_aspect;
+    int height;
+    int width;
+};
+
 struct space_manager
 {
     struct table view;
@@ -24,11 +32,9 @@ struct space_manager
     enum window_node_child window_placement;
     bool window_zoom_persist;
     bool auto_balance;
-    bool auto_pad;
-    float auto_pad_min_aspect;
-    int auto_pad_width;
-    int auto_pad_height;
 
+    struct space_autopad _autopad;
+    struct space_autopad* autopad;
     struct space_label *labels;
 };
 

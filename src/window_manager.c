@@ -2137,7 +2137,7 @@ void window_manager_toggle_window_parent(struct space_manager *sm, struct window
 
     if (!node->parent) return;
 
-    if (sm->auto_pad) {
+    if (sm->autopad->enabled) {
       uint32_t window_count = view_window_count(view);
       space_manager_autopad_view(sm, view, window_count, true);
     }
@@ -2164,14 +2164,14 @@ void window_manager_toggle_window_fullscreen(struct space_manager *sm, struct wi
 
     if (node->zoom == view->root) {
         node->zoom = NULL;
-        if (sm->auto_pad) {
+        if (sm->autopad->enabled) {
           uint32_t window_count = view_window_count(view);
           space_manager_autopad_view(sm, view, window_count, true);
         }
 
         window_node_flush(node);
     } else {
-        if (sm->auto_pad) {
+        if (sm->autopad->enabled) {
           space_manager_reset_view_paddings(sm, view);
         }
         node->zoom = view->root;
