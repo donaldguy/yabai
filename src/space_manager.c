@@ -491,11 +491,17 @@ void space_manager_set_autopad_height(struct space_manager* sm, int new_height) 
   }
 }
 
-void space_manager_set_autopad_min_aspect(struct space_manager* sm, float new_aspect) {
+void space_manager_set_autopad_min_aspect(struct space_manager* sm, float aspect_numerator, int aspect_denominator) {
   float old_aspect = sm->autopad->min_aspect;
-  sm->autopad->min_aspect = new_aspect;
+  if (aspect_denominator > 1) {
+    sprintf(sm->autopad->pretty_aspect_ratio, "%d:%d", (int)aspect_numerator, aspect_denominator);
+    sm->autopad->min_aspect = aspect_numerator / (float)aspect_denominator;
+  } else {
+    sprintf(sm->autopad->pretty_aspect_ratio, "%.4f", aspect_numerator);
+    sm->autopad->min_aspect = aspect_numerator;
+  }
 
-  if (sm->autopad->enabled && old_aspect != new_aspect) {
+  if (sm->autopad->enabled && old_aspect != sm->autopad->min_aspect) {
     space_manager_mark_spaces_invalid(sm);
   }
 }
@@ -1148,16 +1154,12 @@ void space_manager_begin(struct space_manager *sm)
     // this is just to avoid awkward sm->autopad.x access everywhere :/
     sm->autopad = &sm->_autopad;
     sm->autopad->enabled = false;
-    sm->autopad->min_aspect = 20. / 9.;
+    space_manager_set_autopad_min_aspect(sm, 20., 9);
     sm->autopad->width = 840;
     sm->autopad->height = 1200;
 
     sm->split_ratio = 0.5f;
     sm->auto_balance = false;
-    sm->autopad->enabled = false;
-    sm->autopad->min_aspect = 20. / 9.;
-    sm->autopad->width = 840;
-    sm->autopad->height = 1200;
     sm->split_type = SPLIT_AUTO;
     sm->window_placement = CHILD_SECOND;
     sm->window_zoom_persist = true;

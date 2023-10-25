@@ -10,6 +10,8 @@ struct space_label
 struct space_autopad
 {
     bool enabled;
+
+    char pretty_aspect_ratio[7]; // NNN + : + MMM OR X.XXXXX
     float min_aspect;
     int height;
     int width;

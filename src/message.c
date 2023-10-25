@@ -1498,11 +1498,14 @@ static void handle_domain_config(FILE *rsp, struct token domain, char *message)
             }
         } else if (token_equals(command, COMMAND_CONFIG_AUTO_PAD_ASPECT)) {
             struct token value = get_token(&message);
-            float new_min_aspect;
+            float new_min_aspect_numerator;
+            int new_min_aspect_denominator;
             if (!token_is_valid(value)) {
-              fprintf(rsp, "%f\n", g_space_manager.autopad->min_aspect);
-            } else if (token_is_float(value, &new_min_aspect)) {
-              space_manager_set_autopad_min_aspect(&g_space_manager, new_min_aspect);
+              fprintf(rsp, "%s\n", g_space_manager.autopad->pretty_aspect_ratio);
+            } else if (token_is_float(value, &new_min_aspect_numerator)) {
+              space_manager_set_autopad_min_aspect(&g_space_manager, new_min_aspect_numerator, 1);
+            } else if ((sscanf(value.text, "%3f:%3d", &new_min_aspect_numerator, &new_min_aspect_denominator)) == 2) {
+              space_manager_set_autopad_min_aspect(&g_space_manager, new_min_aspect_numerator, new_min_aspect_denominator);
             } else {
               daemon_fail(rsp, "unknown value '%.*s' given to command '%.*s' for domain '%.*s'\n", value.length, value.text, command.length, command.text, domain.length, domain.text);
             }
