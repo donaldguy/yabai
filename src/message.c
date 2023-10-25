@@ -338,6 +338,16 @@ static bool token_is_positive_integer(struct token token, int *value)
     return true;
 }
 
+static bool token_is_positive_percentage(struct token token, int *value)
+{
+    if (token.text[token.length - 1] != '%') {
+        return false;
+    }
+
+    token.length = token.length - 1;
+    return token_is_positive_integer(token, value);
+}
+
 static bool token_is_hexadecimal(struct token token, uint32_t *value)
 {
     *value = 0;
@@ -1480,9 +1490,11 @@ static void handle_domain_config(FILE *rsp, struct token domain, char *message)
             struct token value = get_token(&message);
             int new_width;
             if (!token_is_valid(value)) {
-              fprintf(rsp, "%d\n", g_space_manager.autopad->width);
+              fprintf(rsp, "%d%s\n", g_space_manager.autopad->width, (g_space_manager.autopad->width_type == SPACE_AUTOPAD_VALUE_PERCENTAGE ? "%" : ""));
+            } else if (token_is_positive_percentage(value, &new_width)) {
+              space_manager_set_autopad_width(&g_space_manager, SPACE_AUTOPAD_VALUE_PERCENTAGE, new_width);
             } else if (token_is_positive_integer(value, &new_width)) {
-              space_manager_set_autopad_width(&g_space_manager, new_width);
+              space_manager_set_autopad_width(&g_space_manager, SPACE_AUTOPAD_VALUE_FIXED_INT, new_width);
             } else {
               daemon_fail(rsp, "unknown value '%.*s' given to command '%.*s' for domain '%.*s'\n", value.length, value.text, command.length, command.text, domain.length, domain.text);
             }
@@ -1490,9 +1502,11 @@ static void handle_domain_config(FILE *rsp, struct token domain, char *message)
             struct token value = get_token(&message);
             int new_height;
             if (!token_is_valid(value)) {
-              fprintf(rsp, "%d\n", g_space_manager.autopad->height);
+              fprintf(rsp, "%d%s\n", g_space_manager.autopad->height, (g_space_manager.autopad->height_type == SPACE_AUTOPAD_VALUE_PERCENTAGE ? "%" : ""));
+            } else if (token_is_positive_percentage(value, &new_height)) {
+              space_manager_set_autopad_height(&g_space_manager, SPACE_AUTOPAD_VALUE_PERCENTAGE, new_height);
             } else if (token_is_positive_integer(value, &new_height)) {
-              space_manager_set_autopad_height(&g_space_manager, new_height);
+              space_manager_set_autopad_height(&g_space_manager, SPACE_AUTOPAD_VALUE_FIXED_INT, new_height);
             } else {
               daemon_fail(rsp, "unknown value '%.*s' given to command '%.*s' for domain '%.*s'\n", value.length, value.text, command.length, command.text, domain.length, domain.text);
             }
