@@ -1477,19 +1477,34 @@ static void handle_domain_config(FILE *rsp, struct token domain, char *message)
                 daemon_fail(rsp, "unknown value '%.*s' given to command '%.*s' for domain '%.*s'\n", value.length, value.text, command.length, command.text, domain.length, domain.text);
             }
         } else if (token_equals(command, COMMAND_CONFIG_AUTO_PAD_WIDTH)) {
-            struct token_value value = token_to_value(get_token(&message));
-            if (value.type == TOKEN_TYPE_INT) {
-              g_space_manager.auto_pad_width = value.int_value;
+            struct token value = get_token(&message);
+            int new_width;
+            if (!token_is_valid(value)) {
+              fprintf(rsp, "%d\n", g_space_manager.auto_pad_width);
+            } else if (token_is_positive_integer(value, &new_width)) {
+              g_space_manager.auto_pad_width = new_width;
+            } else {
+              daemon_fail(rsp, "unknown value '%.*s' given to command '%.*s' for domain '%.*s'\n", value.length, value.text, command.length, command.text, domain.length, domain.text);
             }
         } else if (token_equals(command, COMMAND_CONFIG_AUTO_PAD_HEIGHT)) {
-            struct token_value value = token_to_value(get_token(&message));
-            if (value.type == TOKEN_TYPE_INT) {
-              g_space_manager.auto_pad_height = value.int_value;
+            struct token value = get_token(&message);
+            int new_height;
+            if (!token_is_valid(value)) {
+              fprintf(rsp, "%d\n", g_space_manager.auto_pad_height);
+            } else if (token_is_positive_integer(value, &new_height)) {
+              g_space_manager.auto_pad_height = new_height;
+            } else {
+              daemon_fail(rsp, "unknown value '%.*s' given to command '%.*s' for domain '%.*s'\n", value.length, value.text, command.length, command.text, domain.length, domain.text);
             }
         } else if (token_equals(command, COMMAND_CONFIG_AUTO_PAD_ASPECT)) {
-            struct token_value value = token_to_value(get_token(&message));
-            if (value.type == TOKEN_TYPE_FLOAT) {
-              g_space_manager.auto_pad_min_aspect = value.float_value;
+            struct token value = get_token(&message);
+            float new_aspect_ratio;
+            if (!token_is_valid(value)) {
+              fprintf(rsp, "%f\n", g_space_manager.auto_pad_min_aspect);
+            } else if (token_is_float(value, &new_aspect_ratio)) {
+              g_space_manager.auto_pad_min_aspect = new_aspect_ratio;
+            } else {
+              daemon_fail(rsp, "unknown value '%.*s' given to command '%.*s' for domain '%.*s'\n", value.length, value.text, command.length, command.text, domain.length, domain.text);
             }
         } else if (token_equals(command, COMMAND_CONFIG_MOUSE_MOD)) {
             struct token value = get_token(&message);
