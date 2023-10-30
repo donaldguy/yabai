@@ -495,7 +495,7 @@ void space_manager_set_autopad_min_aspect(struct space_manager* sm, float aspect
   float old_aspect = sm->autopad->min_aspect;
   if (aspect_denominator > 1) {
     sprintf(sm->autopad->pretty_aspect_ratio, "%d:%d", (int)aspect_numerator, aspect_denominator);
-    sm->autopad->min_aspect = aspect_numerator / (float)aspect_denominator;
+    sm->autopad->min_aspect = (aspect_numerator - 1.f) / (float)aspect_denominator;
   } else {
     sprintf(sm->autopad->pretty_aspect_ratio, "%.4f", aspect_numerator);
     sm->autopad->min_aspect = aspect_numerator;
