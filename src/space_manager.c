@@ -172,7 +172,7 @@ void space_manager_untile_window(struct space_manager *sm, struct view *view, st
       uint32_t did = space_display_id(view->sid);
       CGRect frame = CGDisplayBounds(did);
       if (frame.size.width / frame.size.height > sm->autopad->min_aspect
-          && frame.size.height > sm->autopad->height
+          && frame.size.height > space_manager_autopad_height(sm, &frame.size)
           && space_manager_auto_pad_untile_window(sm, view, window)) return;
     }
 
@@ -472,21 +472,26 @@ void space_manager_set_autopad(struct space_manager* sm, bool enabled) {
   space_manager_mark_spaces_invalid(sm);
 }
 
-void space_manager_set_autopad_width(struct space_manager* sm, int new_width) {
+void space_manager_set_autopad_width(struct space_manager* sm, enum space_autopad_value_type new_type, int new_width) {
+  enum space_autopad_value_type old_type = sm->autopad->width_type;
   int old_width = sm->autopad->width;
+
+  sm->autopad->width_type = new_type;
   sm->autopad->width = new_width;
 
-  if (sm->autopad->enabled && old_width != new_width) {
+  if (sm->autopad->enabled && ( old_type != new_type || old_width != new_width )) {
     space_manager_mark_spaces_invalid(sm);
   }
 }
 
-void space_manager_set_autopad_height(struct space_manager* sm, int new_height) {
+void space_manager_set_autopad_height(struct space_manager* sm, enum space_autopad_value_type new_type, int new_height) {
+  enum space_autopad_value_type old_type = sm->autopad->height_type;
   int old_height = sm->autopad->height;
 
+  sm->autopad->height_type = new_type;
   sm->autopad->height = new_height;
 
-  if (sm->autopad->enabled && old_height != new_height) {
+  if (sm->autopad->enabled && (old_type != new_type || old_height != new_height)) {
     space_manager_mark_spaces_invalid(sm);
   }
 }
@@ -506,13 +511,31 @@ void space_manager_set_autopad_min_aspect(struct space_manager* sm, float aspect
   }
 }
 
+int space_manager_autopad_height(struct space_manager* sm, CGSize* view_size) {
+  if (sm->autopad->height_type == SPACE_AUTOPAD_VALUE_FIXED_INT) {
+    return sm->autopad->height;
+  } else {
+    // XXX: may be worth the complexity to memoize this per did per EVENT_HANDLER(DISPLAY_RESIZED)
+    return (sm->autopad->height * view_size->height) / 100;
+  }
+}
+
+int space_manager_autopad_width(struct space_manager* sm, CGSize* view_size) {
+  if (sm->autopad->width_type == SPACE_AUTOPAD_VALUE_FIXED_INT) {
+    return sm->autopad->width;
+  } else {
+    // XXX: may be worth the complexity to memoize this per did per EVENT_HANDLER(DISPLAY_RESIZED)
+    return (sm->autopad->width * view_size->width) / 100;
+  }
+}
+
 bool space_manager_autopad_view(struct space_manager* sm, struct view* view, uint32_t window_count, bool update) {
   if (sm->autopad->enabled) {
     uint32_t did = space_display_id(view->sid);
     CGRect frame = CGDisplayBounds(did);
 
-    int target_height = sm->autopad->height;
-    int target_width = sm->autopad->width;
+    int target_height = space_manager_autopad_height(sm, &frame.size);
+    int target_width = space_manager_autopad_width(sm, &frame.size);
 
     if (frame.size.width / frame.size.height >= sm->autopad->min_aspect
         && frame.size.height > target_height) {
@@ -573,7 +596,7 @@ struct view *space_manager_tile_window_on_space_with_insertion_point(struct spac
       uint32_t did = space_display_id(view->sid);
       CGRect frame = CGDisplayBounds(did);
       if (frame.size.width / frame.size.height >= sm->autopad->min_aspect
-          && frame.size.height > sm->autopad->height) {
+          && frame.size.height > space_manager_autopad_height(sm, &frame.size)) {
         struct view* auto_padded_view = space_manager_auto_pad_view_insertion(sm, view, window, insertion_point);
         if (auto_padded_view) return auto_padded_view;
       }
@@ -1155,7 +1178,9 @@ void space_manager_begin(struct space_manager *sm)
     sm->autopad = &sm->_autopad;
     sm->autopad->enabled = false;
     space_manager_set_autopad_min_aspect(sm, 20., 9);
+    sm->autopad->width_type = SPACE_AUTOPAD_VALUE_FIXED_INT;
     sm->autopad->width = 840;
+    sm->autopad->height_type = SPACE_AUTOPAD_VALUE_FIXED_INT;
     sm->autopad->height = 1200;
 
     sm->split_ratio = 0.5f;
