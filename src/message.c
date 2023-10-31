@@ -1470,26 +1470,41 @@ static void handle_domain_config(FILE *rsp, struct token domain, char *message)
             if (!token_is_valid(value)) {
                 fprintf(rsp, "%s\n", bool_str[g_space_manager.auto_pad]);
             } else if (token_equals(value, ARGUMENT_COMMON_VAL_OFF)) {
-                g_space_manager.auto_pad = false;
+                space_manager_set_autopad(&g_space_manager, false);
             } else if (token_equals(value, ARGUMENT_COMMON_VAL_ON)) {
-                g_space_manager.auto_pad = true;
+                space_manager_set_autopad(&g_space_manager, true);
             } else {
                 daemon_fail(rsp, "unknown value '%.*s' given to command '%.*s' for domain '%.*s'\n", value.length, value.text, command.length, command.text, domain.length, domain.text);
             }
         } else if (token_equals(command, COMMAND_CONFIG_AUTO_PAD_WIDTH)) {
-            struct token_value value = token_to_value(get_token(&message));
-            if (value.type == TOKEN_TYPE_INT) {
-              g_space_manager.auto_pad_width = value.int_value;
+            struct token value = get_token(&message);
+            int new_width;
+            if (!token_is_valid(value)) {
+              fprintf(rsp, "%d\n", g_space_manager.auto_pad_width);
+            } else if (token_is_positive_integer(value, &new_width)) {
+              space_manager_set_autopad_width(&g_space_manager, new_width);
+            } else {
+              daemon_fail(rsp, "unknown value '%.*s' given to command '%.*s' for domain '%.*s'\n", value.length, value.text, command.length, command.text, domain.length, domain.text);
             }
         } else if (token_equals(command, COMMAND_CONFIG_AUTO_PAD_HEIGHT)) {
-            struct token_value value = token_to_value(get_token(&message));
-            if (value.type == TOKEN_TYPE_INT) {
-              g_space_manager.auto_pad_height = value.int_value;
+            struct token value = get_token(&message);
+            int new_height;
+            if (!token_is_valid(value)) {
+              fprintf(rsp, "%d\n", g_space_manager.auto_pad_height);
+            } else if (token_is_positive_integer(value, &new_height)) {
+              space_manager_set_autopad_height(&g_space_manager, new_height);
+            } else {
+              daemon_fail(rsp, "unknown value '%.*s' given to command '%.*s' for domain '%.*s'\n", value.length, value.text, command.length, command.text, domain.length, domain.text);
             }
         } else if (token_equals(command, COMMAND_CONFIG_AUTO_PAD_ASPECT)) {
-            struct token_value value = token_to_value(get_token(&message));
-            if (value.type == TOKEN_TYPE_FLOAT) {
-              g_space_manager.auto_pad_min_aspect = value.float_value;
+            struct token value = get_token(&message);
+            float new_min_aspect;
+            if (!token_is_valid(value)) {
+              fprintf(rsp, "%f\n", g_space_manager.auto_pad_min_aspect);
+            } else if (token_is_float(value, &new_min_aspect)) {
+              space_manager_set_autopad_min_aspect(&g_space_manager, new_min_aspect);
+            } else {
+              daemon_fail(rsp, "unknown value '%.*s' given to command '%.*s' for domain '%.*s'\n", value.length, value.text, command.length, command.text, domain.length, domain.text);
             }
         } else if (token_equals(command, COMMAND_CONFIG_MOUSE_MOD)) {
             struct token value = get_token(&message);
